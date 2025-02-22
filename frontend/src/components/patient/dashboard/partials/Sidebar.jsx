@@ -292,7 +292,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, data, currentPage, setPage }) {
               {/* Hospital Bills */}
               
               {/* Insurances */}
-              <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${currentPage==="Insurances" && 'bg-slate-900'}`}>
+              {/* <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${currentPage==="Insurances" && 'bg-slate-900'}`}>
               <NavLink
                   onClick={(e) => {
                     localStorage.setItem("currentPage", "Insurances");
@@ -318,7 +318,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, data, currentPage, setPage }) {
                     </span>
                   </div>
                 </NavLink>
-              </li>
+              </li> */}
               {/* Settings */}
               <SidebarLinkGroup activecondition={pathname.includes('settings')}>
                 {(handleClick, open) => {

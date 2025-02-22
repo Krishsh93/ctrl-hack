@@ -5,7 +5,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import axios from 'axios';
 // import './App.css'; // Import the CSS file to apply the theme
 
-const HealthScore = ({patientEmail}) => {
+const HealthScore = ({patientEmail,setShowHealthScore,setShowPatientAnalysis}) => {
     const [sleepDuration, setSleepDuration] = useState(7);
     const [qualityOfSleep, setQualityOfSleep] = useState(7);
     const [physicalActivityLevel, setPhysicalActivityLevel] = useState(60);
@@ -15,7 +15,7 @@ const HealthScore = ({patientEmail}) => {
     const [result, setResult] = useState(null);
 
     const handleSubmit = async () => {
-        const response = await fetch('http://localhost:5000/predict', {
+        const response = await fetch('http://localhost:5000/predict_health', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -80,7 +80,7 @@ const HealthScore = ({patientEmail}) => {
                         <input
                             type="range"
                             min="0"
-                            max="120"
+                            max="100"
                             value={physicalActivityLevel}
                             onChange={(e) => setPhysicalActivityLevel(Number(e.target.value))}
                             className="w-full"
@@ -133,6 +133,16 @@ const HealthScore = ({patientEmail}) => {
                         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                     >
                         Submit
+                    </button>
+                    <button
+                        onClick={()=>{
+                            setResult(null)
+                            setShowHealthScore(false)
+                            setShowPatientAnalysis(true)}}
+                            
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                    >
+                        Go back
                     </button>
 
                     {/* Health Score and Messages */}
