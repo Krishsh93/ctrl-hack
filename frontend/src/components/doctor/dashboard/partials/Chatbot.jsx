@@ -26,50 +26,45 @@ export default function MedicalChatbot() {
     setInput("")
     setLoading(true)
 
-    if (pdfFile) {
-      const formData = new FormData()
-      formData.append("message", input)
-      formData.append("file", pdfFile)
+    try {
+      let response
+      if (pdfFile) {
+        const formData = new FormData()
+        formData.append("message", input)
+        formData.append("file", pdfFile)
 
-      try {
-        const response = await fetch("http://localhost:8000/upload", {
+        response = await fetch("http://localhost:8000/upload", {
           method: "POST",
           body: formData,
         })
-
-        const data = await response.json()
-
-        setMessages((prev) => [...prev, { text: data.response, sender: "bot" }])
-      } catch (error) {
-        setMessages((prev) => [
-          ...prev,
-          { text: "Error processing request. Please try again.", sender: "bot" },
-        ])
-      } finally {
-        setLoading(false)
-        setPdfFile(null) // Reset the file after sending
-      }
-    } else {
-      try {
-        const response = await fetch("http://localhost:8000/chat", {
+      } else {
+        response = await fetch("http://localhost:8000/chat", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: input }),
         })
+      }
 
-        const data = await response.json()
+      const data = await response.json()
+      console.log("API Response:", data) // Debugging API response
 
-        setMessages((prev) => [...prev, { text: data.response, sender: "bot" }])
-      } catch (error) {
+      if (data.reply) {
+        setMessages((prev) => [...prev, { text: data.reply, sender: "bot" }])
+      } else {
         setMessages((prev) => [
           ...prev,
-          { text: "Error processing request. Please try again.", sender: "bot" },
+          { text: "Unexpected response format. Please try again.", sender: "bot" },
         ])
-      } finally {
-        setLoading(false)
       }
+    } catch (error) {
+      console.error("Error:", error)
+      setMessages((prev) => [
+        ...prev,
+        { text: "Error processing request. Please try again.", sender: "bot" },
+      ])
+    } finally {
+      setLoading(false)
+      setPdfFile(null) // Reset the file after sending
     }
   }
 

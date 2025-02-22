@@ -1,6 +1,7 @@
 import os
 import warnings
 import faiss
+from flask_cors import CORS
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PyMuPDFLoader
@@ -16,8 +17,9 @@ from langchain import hub
 warnings.filterwarnings("ignore")
 load_dotenv()
 
-# Initialize Flask
 app = Flask(__name__)
+app.config['DEBUG'] = True
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # Global variables
 chat_history = []
