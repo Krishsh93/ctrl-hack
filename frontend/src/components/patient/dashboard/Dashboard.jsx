@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom"
 import PatientDashboard from './partials/dashboard/PatientDashboard';
 import DoctorsList from './partials/dashboard/Doctors';
 import MedicalChatbot from './partials/dashboard/Chatbot';
+import RealTimeHealth from './partials/dashboard/RealTimeHealth';
 
 function Dashboard() {
   const { state } = useLocation();
@@ -40,8 +41,8 @@ function Dashboard() {
       return <DoctorsList />
     } else if (currentPage === "Messages") {
       return <Messages />
-    } else if (currentPage === "Appoinments") {
-      return <Appoinments />
+    } else if (currentPage === "Prescriptions") {
+      return <RealTimeHealth />
     }
     else if (currentPage === "Dashboard") {
       return <PatientDashboard />

@@ -6,7 +6,7 @@ import joblib
 from flask_cors import CORS
 from PIL import Image
 import io
-
+# from tensorflow.keras.models import load_model
 app = Flask(__name__)
 app.config['DEBUG'] = True
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -14,6 +14,7 @@ CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 # Load the Keras model for hemorrhage detection
 model_hemorrhage = tf.keras.models.load_model('hemorrhage_detection_model.h5')
 target_size_hemorrhage = (128, 128)
+model = tf.keras.models.load_model("heart_attack_risk_model.h5")
 
 # Load the trained models for disease prediction from blood data
 model_blood = joblib.load('blood_model.pkl')
@@ -128,6 +129,35 @@ def calculate_water_score(physical_activity_level, stress_level):
     water_score += calculate_score(stress_level, stress_level_scores)
     
     return min(water_score, 50)
+# Load the Saved Model
+
+
+# Define Prediction Function
+def predict_heart_attack_risk(data):
+    """Predicts heart attack risk from smartwatch sensor data."""
+    data = np.array(data).reshape(1, 2, 4, 1)  # Reshape input
+    prediction = model.predict(data)
+    risk_class = np.argmax(prediction)
+    confidence = float(prediction[0][risk_class] * 100)
+    risk_label = "High Risk" if risk_class == 1 else "Low Risk"
+    
+    return {"risk": risk_label, "confidence": confidence}
+
+# Define API Endpoint
+@app.route('/predict_heart', methods=['POST'])
+def predict():
+    try:
+        # Get JSON Data
+        json_data = request.get_json()
+        new_data = json_data['data']  # Expecting a list of 8 sensor values
+        
+        # Make Prediction
+        result = predict_heart_attack_risk(new_data)
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+    
 
 @app.route('/predict_health', methods=['POST'])
 def predict_health():
@@ -207,38 +237,38 @@ feature_order = ['Age','Sex',
     'PLT /mm3',
     'HGB']
 
-@app.route('/predict_blood', methods=['POST'])
-def predict():
-    # Get the data from the request
-    data = request.json
+# @app.route('/predict_blood', methods=['POST'])
+# def predict():
+#     # Get the data from the request
+#     data = request.json
     
-    # Convert data to a DataFrame
-    df = pd.DataFrame([data])
+#     # Convert data to a DataFrame
+#     df = pd.DataFrame([data])
     
-    # Ensure the incoming data matches the feature order
-    features = df[feature_order]
+#     # Ensure the incoming data matches the feature order
+#     features = df[feature_order]
     
-    # Scale the features
-    features_scaled = scaler.transform(features)
+#     # Scale the features
+#     features_scaled = scaler.transform(features)
     
-    # Make predictions
-    cluster = model_blood.predict(features_scaled)[0]
+#     # Make predictions
+#     cluster = model_blood.predict(features_scaled)[0]
     
-    # Map cluster to disease type
-    cluster_to_disease = {
-        0: 'Diabetes',
-        1: 'Anemia',
-        2: 'Infections',
-        3: 'Liver Disease',
-        4: 'Kidney Disease',
-        5: 'Thyroid Disorders',
-        6: 'Heart Disease',
-        7: 'Autoimmune Diseases',
-        8: 'Cancer'
-    }
-    disease = cluster_to_disease[cluster]
+#     # Map cluster to disease type
+#     cluster_to_disease = {
+#         0: 'Diabetes',
+#         1: 'Anemia',
+#         2: 'Infections',
+#         3: 'Liver Disease',
+#         4: 'Kidney Disease',
+#         5: 'Thyroid Disorders',
+#         6: 'Heart Disease',
+#         7: 'Autoimmune Diseases',
+#         8: 'Cancer'
+#     }
+#     disease = cluster_to_disease[cluster]
     
-    return jsonify({'disease': disease})
+#     return jsonify({'disease': disease})
 
 @app.route('/predict_symptoms', methods=['POST'])
 def predict_symptoms():
