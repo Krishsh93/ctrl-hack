@@ -100,8 +100,7 @@ rag_chain = (
 )
 
 prompttt = """
-VERY IMPORTANT : Do not provide any medical advice or diagnosis. If you are unsure about the answer, please mention that you are unsure.
-VERY IMPORTANT: DO  NOT PROVIDE ANYTHING ELSE OTHER THAN MEDICAL  DATA. JUST SAY THAT IT IS NOT RELATED TO MEDICINES like multiplications or artihmetic operations"""
+VERY IMPORTANT: ACT AS A MEDICAL CHATBOT AND GIVE MEANINGFUL ADVICES DO NOT HALLUCIANATE OR GIVE ANYTHING ELSE"""
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -152,21 +151,29 @@ def upload():
     response = rag_chain.invoke(question)
     return jsonify({"reply": response.content if hasattr(response, "content") else str(response)})
 
+from pydub import AudioSegment
+import io
 
 @app.route("/voice", methods=["POST"])
 def voice():
-    if "file" not in request.files:
+    if "voice" not in request.files:
         return jsonify({"error": "No file part"}), 400
 
-    file = request.files["file"]
+    file = request.files["voice"]
 
     if file.filename == "":
         return jsonify({"error": "No selected file"}), 400
 
-    recognizer = sr.Recognizer()
-    audio_file = sr.AudioFile(file)
-
     try:
+        # Convert webm to wav
+        audio = AudioSegment.from_file(file, format="webm")
+        wav_io = io.BytesIO()
+        audio.export(wav_io, format="wav")
+        wav_io.seek(0)
+
+        recognizer = sr.Recognizer()
+        audio_file = sr.AudioFile(wav_io)
+
         with audio_file as source:
             audio = recognizer.record(source)
         user_input = recognizer.recognize_google(audio).strip()
@@ -188,8 +195,9 @@ def voice():
         return jsonify({"error": "Could not understand audio"}), 400
     except sr.RequestError as e:
         return jsonify({"error": f"Could not request results; {e}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {e}"}), 500
 
-
+# Run Flask app
 if __name__ == "__main__":
-    from waitress import serve  # Use waitress for production
-    serve(app, host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000, debug=True)

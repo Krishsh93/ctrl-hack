@@ -52,7 +52,7 @@ export default function MedicalChatbot() {
         const response = await fetch("http://localhost:8000/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question: input }),
+          body: JSON.stringify({ message: input }),
         });
 
         const data = await response.json();
@@ -90,7 +90,7 @@ export default function MedicalChatbot() {
   const handleStartRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
       mediaRecorderRef.current = mediaRecorder;
       let audioChunks = [];
 
@@ -99,7 +99,7 @@ export default function MedicalChatbot() {
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         await handleSendVoice(audioBlob);
       };
 
@@ -122,7 +122,7 @@ export default function MedicalChatbot() {
   // Send Voice to `/voice` API
   const handleSendVoice = async (audioBlob) => {
     const formData = new FormData();
-    formData.append("voice", audioBlob, "recorded_audio.wav");
+    formData.append("voice", audioBlob, "recorded_audio.webm");
 
     try {
       setMessages((prev) => [
