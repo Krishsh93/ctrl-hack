@@ -64,10 +64,14 @@ model = ChatOllama(model="medllama2:latest", base_url="http://localhost:11434")
 prompt = hub.pull("rlm/rag-prompt")
 # Define prompt template
 prompt_template = """
+VERY IMPORTANT : Do not provide any medical advice or diagnosis. If you are unsure about the answer, please mention that you are unsure.
+VERY IMPORTANT: DO  NOT PROVIDE ANYTHING ELSE OTHER THAN MEDICAL  DATA. JUST SAY THAT IT IS NOT RELATED TO MEDICINES like multiplications or artihmetic operations
 You are an assistant for doctor tasks. Use the following context to answer the question:
 Context: {context}
 Question: {question}
-Answer in bullet points. Answer only from context.
+Answer in bullet points. Answer only from context .
+VERY IMPORTANT : Do not provide any medical advice or diagnosis. If you are unsure about the answer, please mention that you are unsure.
+VERY IMPORTANT: DO  NOT PROVIDE ANYTHING ELSE OTHER THAN MEDICAL RELATED DATA. JUST SAY THAT IT IS NOT RELATED TO MEDICINES
 """
 
 prompt = ChatPromptTemplate.from_template(prompt_template)
@@ -94,6 +98,10 @@ rag_chain = (
     | StrOutputParser()
 )
 
+prompttt = """
+VERY IMPORTANT : Do not provide any medical advice or diagnosis. If you are unsure about the answer, please mention that you are unsure.
+VERY IMPORTANT: DO  NOT PROVIDE ANYTHING ELSE OTHER THAN MEDICAL  DATA. JUST SAY THAT IT IS NOT RELATED TO MEDICINES like multiplications or artihmetic operations"""
+
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json.get("message", "").strip()
@@ -101,9 +109,10 @@ def chat():
     # Ensure input is a string
     if not isinstance(user_input, str):
         user_input = str(user_input)
+    user_input = user_input + " " + prompttt
 
     print(f"User Input: {user_input}")
-    response = model.stream(f"{user_input}")
+    response = model.invoke(f"{user_input}")
 
     # Extract content from the response
     content = response.content if hasattr(response, "content") else str(response)
@@ -139,7 +148,7 @@ def upload():
             vector_store.save_local(db_name)
 
     # Retrieve context and generate response
-    response = rag_chain.stream(question)
+    response = rag_chain.invoke(question)
     return jsonify({"reply": response.content if hasattr(response, "content") else str(response)})
 
 if __name__ == "__main__":

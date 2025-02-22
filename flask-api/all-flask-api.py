@@ -8,7 +8,8 @@ from PIL import Image
 import io
 
 app = Flask(__name__)
-CORS(app)
+app.config['DEBUG'] = True
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # Load the Keras model for hemorrhage detection
 model_hemorrhage = tf.keras.models.load_model('hemorrhage_detection_model.h5')
@@ -104,41 +105,83 @@ def symptoms_to_vector(user_symptoms, all_symptoms):
                 symptom_vector[index[0]] = 1
     return symptom_vector
 
+def calculate_score(value, score_map):
+    for threshold, score in sorted(score_map.items(), reverse=True):
+        if value >= threshold:
+            return score
+    return 0
+
 def calculate_sleep_score(sleep_duration, quality_of_sleep):
-    sleep_score = 0
-    if sleep_duration >= 8:
-        sleep_score += 20
-    elif sleep_duration >= 7:
-        sleep_score += 15
-    elif sleep_duration >= 6:
-        sleep_score += 10
+    sleep_duration_scores = {8: 20, 7: 15, 6: 10}
+    quality_of_sleep_scores = {8: 20, 7: 15, 6: 10}
     
-    if quality_of_sleep >= 8:
-        sleep_score += 20
-    elif quality_of_sleep >= 7:
-        sleep_score += 15
-    elif quality_of_sleep >= 6:
-        sleep_score += 10
+    sleep_score = calculate_score(sleep_duration, sleep_duration_scores)
+    sleep_score += calculate_score(quality_of_sleep, quality_of_sleep_scores)
     
     return min(sleep_score, 50)
 
 def calculate_water_score(physical_activity_level, stress_level):
-    water_score = 0
-    if physical_activity_level >= 80:
-        water_score += 20
-    elif physical_activity_level >= 60:
-        water_score += 15
-    elif physical_activity_level >= 50:
-        water_score += 10
+    physical_activity_scores = {80: 20, 60: 15, 50: 10}
+    stress_level_scores = {3: 20, 5: 15, 7: 10}
     
-    if stress_level <= 3:
-        water_score += 20
-    elif stress_level <= 5:
-        water_score += 15
-    elif stress_level <= 7:
-        water_score += 10
+    water_score = calculate_score(physical_activity_level, physical_activity_scores)
+    water_score += calculate_score(stress_level, stress_level_scores)
     
     return min(water_score, 50)
+
+@app.route('/predict_health', methods=['POST'])
+def predict_health():
+    try:
+        data = request.get_json()
+        sleep_duration = data.get('sleep_duration', 0)
+        quality_of_sleep = data.get('quality_of_sleep', 0)
+        physical_activity_level = data.get('physical_activity_level', 0)
+        stress_level = data.get('stress_level', 0)
+        daily_steps = data.get('daily_steps', 0)
+        bmi_category = data.get('bmi_category', 'Normal Weight')
+        
+        bmi_categories = ['Underweight', 'Normal Weight', 'Overweight', 'Obese']
+        input_data = pd.DataFrame({
+            'Sleep Duration': [sleep_duration],
+            'Quality of Sleep': [quality_of_sleep],
+            'Physical Activity Level': [physical_activity_level],
+            'Stress Level': [stress_level],
+            'Daily Steps': [daily_steps]
+        })
+        
+        for category in bmi_categories:
+            input_data[f'BMI Category_{category}'] = 0
+        input_data[f'BMI Category_{bmi_category}'] = 1
+        
+        X_columns = [col for col in model_sleep.feature_names_in_ if col in input_data.columns]
+        input_data = input_data.reindex(columns=X_columns, fill_value=0)
+        
+        # Debugging statements to check the input data and model attributes
+        print("Input Data:", input_data)
+        print("Model Sleep Attributes:", dir(model_sleep))
+        print("Model Water Attributes:", dir(model_water))
+        
+        sleep_prediction = model_sleep.predict(input_data)[0]
+        water_prediction = model_water.predict(input_data)[0]
+        
+        sleep_score = calculate_sleep_score(sleep_duration, quality_of_sleep)
+        water_score = calculate_water_score(physical_activity_level, stress_level)
+        
+        total_score = sleep_score + water_score
+        sleep_message = "You need to improve your sleep." if sleep_score < 40 else "Your sleep is fine."
+        water_message = "You need to increase your water intake." if water_score < 40 else "Your water intake is fine."
+        
+        return jsonify({
+            'health_score': total_score,
+            'sleep_message': sleep_message,
+            'water_message': water_message
+        })
+    
+    except Exception as e:
+        print(f"Error: {str(e)}") 
+        return jsonify({'error': str(e)}), 400
+    
+
 
 # API Endpoints
 @app.route('/predict_hemorrhage', methods=['POST'])
@@ -196,53 +239,6 @@ def predict():
     disease = cluster_to_disease[cluster]
     
     return jsonify({'disease': disease})
-
-@app.route('/predict_health', methods=['POST'])
-def predict_health():
-    try:
-        data = request.get_json()
-        sleep_duration = data.get('sleep_duration', 0)
-        quality_of_sleep = data.get('quality_of_sleep', 0)
-        physical_activity_level = data.get('physical_activity_level', 0)
-        stress_level = data.get('stress_level', 0)
-        daily_steps = data.get('daily_steps', 0)
-        bmi_category = data.get('bmi_category', 'Normal Weight')
-        
-        bmi_categories = ['Underweight', 'Normal Weight', 'Overweight', 'Obese']
-        input_data = pd.DataFrame({
-            'Sleep Duration': [sleep_duration],
-            'Quality of Sleep': [quality_of_sleep],
-            'Physical Activity Level': [physical_activity_level],
-            'Stress Level': [stress_level],
-            'Daily Steps': [daily_steps]
-        })
-        
-        for category in bmi_categories:
-            input_data[f'BMI Category_{category}'] = 0
-        input_data[f'BMI Category_{bmi_category}'] = 1
-        
-        X_columns = [col for col in model_sleep.feature_names_in_ if col in input_data.columns]
-        input_data = input_data.reindex(columns=X_columns, fill_value=0)
-        
-        sleep_prediction = model_sleep.predict(input_data)[0]
-        water_prediction = model_water.predict(input_data)[0]
-        
-        sleep_score = calculate_sleep_score(sleep_duration, quality_of_sleep)
-        water_score = calculate_water_score(physical_activity_level, stress_level)
-        
-        total_score = sleep_score + water_score
-        sleep_message = "You need to improve your sleep." if sleep_score < 40 else "Your sleep is fine."
-        water_message = "You need to increase your water intake." if water_score < 40 else "Your water intake is fine."
-        
-        return jsonify({
-            'health_score': total_score,
-            'sleep_message': sleep_message,
-            'water_message': water_message
-        })
-    
-    except Exception as e:
-        print(f"Error: {str(e)}") 
-        return jsonify({'error': str(e)}), 400
 
 @app.route('/predict_symptoms', methods=['POST'])
 def predict_symptoms():
