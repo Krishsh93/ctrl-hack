@@ -117,31 +117,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, data, currentPage, setPage }) {
               </li>
               {/* Dashboard */}
               
-              {/* <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${currentPage === "Bills" && 'bg-slate-900'}`}>
-                <NavLink
-                  onClick={(e) => {
-                    localStorage.setItem("currentPage", "Bills");
-                    setPage()
-                    e.preventDefault();
-                  }}
-                  className={`block text-slate-200 truncate transition duration-150 ${currentPage === "Bills" ? 'hover:text-slate-200' : 'hover:text-white'
-                    }`}
-                >
-                  <div className="flex items-center">
-                    <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-                      <path
-                        className={`fill-current ${currentPage === "Bills" ? 'text-indigo-500' : 'text-slate-600'}`}
-                        d="M18.974 8H22a2 2 0 012 2v6h-2v5a1 1 0 01-1 1h-2a1 1 0 01-1-1v-5h-2v-6a2 2 0 012-2h.974zM20 7a2 2 0 11-.001-3.999A2 2 0 0120 7zM2.974 8H6a2 2 0 012 2v6H6v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5H0v-6a2 2 0 012-2h.974zM4 7a2 2 0 11-.001-3.999A2 2 0 014 7z"
-                      />
-                      <path
-                        className={`fill-current ${currentPage === "Bills" ? 'text-indigo-300' : 'text-slate-400'}`}
-                        d="M12 6a3 3 0 110-6 3 3 0 010 6zm2 18h-4a1 1 0 01-1-1v-6H6v-6a3 3 0 013-3h6a3 3 0 013 3v6h-3v6a1 1 0 01-1 1z"
-                      />
-                    </svg>
-                    <span className={`${sidebarExpanded ? "" : "lg:opacity-0"}text-sm font-medium ml-3 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200 ${currentPage === "Doctors" ? 'text-indigo-500' : 'text-slate-200 hover:text-indigo-400'}`}>Dashboard</span>
-                  </div>
-                </NavLink>
-              </li> */}
+              
               {/* Doctors */}
               <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${currentPage === "Doctors" && 'bg-slate-900'}`}>
                 <NavLink
@@ -168,6 +144,57 @@ function Sidebar({ sidebarOpen, setSidebarOpen, data, currentPage, setPage }) {
                   </div>
                 </NavLink>
               </li>
+              <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${currentPage === "ai-chatbot" && 'bg-slate-900'}`}>
+  <NavLink
+    onClick={(e) => {
+      localStorage.setItem("currentPage", "ai-chatbot");
+      setPage();
+      e.preventDefault();
+    }}
+    className={`block text-slate-200 truncate transition duration-150 ${
+      currentPage === "ai-chatbot" ? 'hover:text-slate-200' : 'hover:text-white'
+    }`}
+  >
+    <div className="flex items-center">
+      {/* New AI Chatbot Icon (Robot) */}
+      <svg
+        className="shrink-0 h-6 w-6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Robot Head */}
+        <rect 
+          className={`${currentPage === "ai-chatbot" ? 'text-indigo-300' : 'text-slate-400'}`} 
+          x="5" y="7" width="14" height="10" rx="2" stroke="currentColor" fill="none"
+        />
+        {/* Eyes */}
+        <circle cx="9" cy="12" r="1" fill="currentColor" />
+        <circle cx="15" cy="12" r="1" fill="currentColor" />
+        {/* Antenna */}
+        <line x1="12" y1="2" x2="12" y2="6" stroke="currentColor" />
+        {/* Side Antennas */}
+        <circle cx="4" cy="12" r="1" fill="currentColor" />
+        <circle cx="20" cy="12" r="1" fill="currentColor" />
+        {/* Mouth */}
+        <line x1="9" y1="16" x2="15" y2="16" stroke="currentColor" />
+      </svg>
+
+      <span
+        className={`${
+          sidebarExpanded ? "" : "lg:opacity-0"
+        } text-sm font-medium ml-3 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200 ${
+          currentPage === "ai-chatbot" ? 'text-indigo-500' : 'text-slate-200 hover:text-indigo-400'
+        }`}
+      >
+        AI Chatbot
+      </span>
+    </div>
+  </NavLink>
+</li>
+
               {/* Prescriptions */}
               <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${currentPage === "Prescriptions" && 'bg-slate-900'}`}>
                 <NavLink

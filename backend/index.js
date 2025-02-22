@@ -377,6 +377,20 @@ app.post("/doctor/login", (req, res) => {
 //     }
 // })
 
+app.get("/doctors", (req, res) => {
+    doctors.find({}, { password: 0, sessionKey: 0 }) // Exclude password and sessionKey fields
+        .then((data) => {
+            if (data.length > 0) {
+                return res.json(data);
+            } else {
+                return res.status(404).json({ message: "No doctors found" });
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal Server Error" });
+        });
+});
 
 
 

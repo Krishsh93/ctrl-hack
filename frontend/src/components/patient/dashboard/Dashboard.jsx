@@ -11,6 +11,7 @@ import Appoinments from './partials/dashboard/Appoinments';
 import { useLocation } from "react-router-dom"
 import PatientDashboard from './partials/dashboard/PatientDashboard';
 import DoctorsList from './partials/dashboard/Doctors';
+import MedicalChatbot from './partials/dashboard/Chatbot';
 
 function Dashboard() {
   const { state } = useLocation();
@@ -45,8 +46,8 @@ function Dashboard() {
     else if (currentPage === "Dashboard") {
       return <PatientDashboard />
     }
-    else if(currentPage === "Bills"){
-      return <PatientDashboard />
+    else if(currentPage === "ai-chatbot"){
+      return <MedicalChatbot />
     }
 }
 
@@ -66,7 +67,7 @@ function Dashboard() {
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
             {/* Welcome banner */}
-            <WelcomeBanner data={state} />
+            {/* <WelcomeBanner data={state} /> */}
             {/* Cards */}
             <div className="h-56 ">
               <CurrentDashboard />
