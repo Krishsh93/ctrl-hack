@@ -10,6 +10,7 @@ import Messages from './partials/dashboard/Messages';
 import Appoinments from './partials/dashboard/Appoinments';
 import { useLocation } from "react-router-dom"
 import PatientDashboard from './partials/dashboard/PatientDashboard';
+import DoctorsList from './partials/dashboard/Doctors';
 
 function Dashboard() {
   const { state } = useLocation();
@@ -35,11 +36,14 @@ function Dashboard() {
      if (currentPage === "Settings") {
       return <Settings data={state} setPage={setPage} />
     } else if (currentPage === "Doctors") {
-      return <Doctors />
+      return <DoctorsList />
     } else if (currentPage === "Messages") {
       return <Messages />
     } else if (currentPage === "Appoinments") {
       return <Appoinments />
+    }
+    else if (currentPage === "Dashboard") {
+      return <PatientDashboard />
     }
     else if(currentPage === "Bills"){
       return <PatientDashboard />
@@ -64,7 +68,7 @@ function Dashboard() {
             {/* Welcome banner */}
             <WelcomeBanner data={state} />
             {/* Cards */}
-            <div className="h-56 grid grid-cols-3 gap-4">
+            <div className="h-56 ">
               <CurrentDashboard />
             </div>
 
