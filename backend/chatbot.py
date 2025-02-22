@@ -13,6 +13,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain import hub
+import speech_recognition as sr
 # Ignore warnings
 warnings.filterwarnings("ignore")
 load_dotenv()
@@ -150,6 +151,44 @@ def upload():
     # Retrieve context and generate response
     response = rag_chain.invoke(question)
     return jsonify({"reply": response.content if hasattr(response, "content") else str(response)})
+
+
+@app.route("/voice", methods=["POST"])
+def voice():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files["file"]
+
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
+    recognizer = sr.Recognizer()
+    audio_file = sr.AudioFile(file)
+
+    try:
+        with audio_file as source:
+            audio = recognizer.record(source)
+        user_input = recognizer.recognize_google(audio).strip()
+
+        # Ensure input is a string
+        if not isinstance(user_input, str):
+            user_input = str(user_input)
+        user_input = user_input + " " + prompttt
+
+        print(f"User Input: {user_input}")
+        response = model.invoke(f"{user_input}")
+
+        # Extract content from the response
+        content = response.content if hasattr(response, "content") else str(response)
+
+        return jsonify({"reply": content})
+
+    except sr.UnknownValueError:
+        return jsonify({"error": "Could not understand audio"}), 400
+    except sr.RequestError as e:
+        return jsonify({"error": f"Could not request results; {e}"}), 500
+
 
 if __name__ == "__main__":
     from waitress import serve  # Use waitress for production
