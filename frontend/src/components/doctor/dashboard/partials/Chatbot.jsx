@@ -82,17 +82,17 @@ export default function MedicalChatbot() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="border-b bg-gradient-to-r from-teal-50 to-blue-50 p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Stethoscope className="w-6 h-6 text-teal-600" />
-          <h1 className="text-xl font-semibold text-gray-800">Medical Assistant</h1>
-        </div>
-        <p className="text-sm text-gray-600">
-          Your secure healthcare companion. Ask questions about symptoms, medications, or schedule appointments.
-        </p>
-      </div>
+      <div className="border-b bg-gradient-to-r from-teal-50 to-blue-50 p-4 text-center">
+  <div className="flex items-center justify-center gap-2 mb-2">
+    <Stethoscope className="w-6 h-6 text-teal-600" />
+    <h1 className="text-xl font-semibold text-gray-800">Medical Assistant</h1>
+  </div>
+  <p className="text-sm text-gray-600">
+    Your secure healthcare companion. Ask questions about symptoms, medications, or schedule appointments.
+  </p>
+</div>
 
       {/* Chat Messages */}
       <div ref={chatContainerRef} className="h-[40vh] overflow-y-auto p-4 bg-gray-50 space-y-4 scroll-smooth">
