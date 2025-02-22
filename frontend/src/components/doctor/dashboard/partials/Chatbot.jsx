@@ -19,55 +19,55 @@ export default function MedicalChatbot() {
   }, [messages])
 
   const handleSendMessage = async () => {
-    if (!input.trim() && !pdfFile) return
-
-    const userMessage = { text: input, sender: "user" }
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
-    setLoading(true)
-
+    if (!input.trim() && !pdfFile) return;
+  
+    const userMessage = { text: input, sender: "user" };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setLoading(true);
+  
     try {
-      let response
+      let response;
+      const formData = new FormData();
+  
       if (pdfFile) {
-        const formData = new FormData()
-        formData.append("message", input)
-        formData.append("file", pdfFile)
-
+        formData.append("question", input || ""); // Ensure message is sent even if empty
+        formData.append("pdf", pdfFile);
+  
         response = await fetch("http://localhost:8000/upload", {
           method: "POST",
           body: formData,
-        })
+        });
       } else {
         response = await fetch("http://localhost:8000/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: input }),
-        })
+        });
       }
-
-      const data = await response.json()
-      console.log("API Response:", data) // Debugging API response
-
+  
+      const data = await response.json();
+      console.log("API Response:", data);
+  
       if (data.reply) {
-        setMessages((prev) => [...prev, { text: data.reply, sender: "bot" }])
+        setMessages((prev) => [...prev, { text: data.reply, sender: "bot" }]);
       } else {
         setMessages((prev) => [
           ...prev,
           { text: "Unexpected response format. Please try again.", sender: "bot" },
-        ])
+        ]);
       }
     } catch (error) {
-      console.error("Error:", error)
+      console.error("Error:", error);
       setMessages((prev) => [
         ...prev,
         { text: "Error processing request. Please try again.", sender: "bot" },
-      ])
+      ]);
     } finally {
-      setLoading(false)
-      setPdfFile(null) // Reset the file after sending
+      setLoading(false);
+      setPdfFile(null); // Reset the file after sending
     }
-  }
-
+  };
   const handleUploadPDF = (event) => {
     const file = event.target.files[0]
     if (file && file.type === "application/pdf") {

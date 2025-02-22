@@ -56,7 +56,8 @@ except Exception as e:
     print("New FAISS index created and saved.")
 
 # Setup retriever
-retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 3, "fetch_k": 100, "lambda_mult": 1})
+retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 3, "fetch_k": 50, "lambda_mult": 0.5})
+
 
 # Load AI model
 model = ChatOllama(model="medllama2:latest", base_url="http://localhost:11434")
@@ -102,12 +103,13 @@ def chat():
         user_input = str(user_input)
 
     print(f"User Input: {user_input}")
-    response = model.invoke(f"{user_input}")
+    response = model.stream(f"{user_input}")
 
     # Extract content from the response
     content = response.content if hasattr(response, "content") else str(response)
 
     return jsonify({"reply": content})
+
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -116,9 +118,6 @@ def upload():
 
     if not uploaded_file or uploaded_file.filename == "":
         return jsonify({"error": "No file selected"}), 400
-
-    if not isinstance(question, str):
-        return jsonify({"error": "Invalid question format"}), 400
 
     # Save file temporarily
     tmp_path = os.path.join("/tmp", uploaded_file.filename)
@@ -131,16 +130,18 @@ def upload():
     new_chunks = splitter.split_documents(pages)
 
     if new_chunks:
-        vector_store.add_documents(new_chunks)
-        vector_store.save_local(db_name)
+        # Avoid re-processing same documents
+        existing_ids = set(vector_store.index_to_docstore_id.values())
+        new_docs = [chunk for chunk in new_chunks if chunk.metadata["source"] not in existing_ids]
+
+        if new_docs:
+            vector_store.add_documents(new_docs)
+            vector_store.save_local(db_name)
 
     # Retrieve context and generate response
+    response = rag_chain.stream(question)
+    return jsonify({"reply": response.content if hasattr(response, "content") else str(response)})
 
-    response = rag_chain.invoke(question)    
-    response_text = response.content if hasattr(response, "content") else str(response)
-
-    return jsonify({"reply": response_text})
-
-# Run Flask app
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    from waitress import serve  # Use waitress for production
+    serve(app, host="0.0.0.0", port=8000)
