@@ -12,7 +12,7 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
 - **Real-time health monitoring via smartwatch (To be implemented)**
 - 
 ## Wireframe
-![Wireframe](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/untitled.jpeg)
+![Wireframe](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/Untitled.jpeg)
 
 
 ## Features
