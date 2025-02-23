@@ -43,7 +43,9 @@ export default function RealTimeHealth() {
           <Line type="monotone" dataKey="heartRate" stroke="red" name="Heart Rate" />
           <Line type="monotone" dataKey="systolicBP" stroke="blue" name="Systolic BP" />
           <Line type="monotone" dataKey="diastolicBP" stroke="green" name="Diastolic BP" />
-          <Line type="monotone" dataKey="spo2" stroke="orange" name="SPO2" />
+          <Line type="monotone" dataKey="hrv" stroke="orange" name="HRV" />
+        //   <Line type="monotone" dataKey="temperature" stroke="grey" name="Body Temperature" />
+        {/* //   <Line type="monotone" dataKey="steps" stroke="black" name="steps" />  */}
         </LineChart>
       </ResponsiveContainer>
     </div>

@@ -340,16 +340,15 @@ io.on("connection", (socket) => {
   // Simulate real-time medical data
   const interval = setInterval(async () => {
     const healthData = {
-        heartRate: Math.floor(Math.random() * (120 - 60) + 60), // BPM
-        hrv: Math.floor(Math.random() * (100 - 20) + 20), // Heart Rate Variability (ms)
-        ecg: (Math.random() * (2.0 - 0.5) + 0.5).toFixed(2),
-        temperature: (Math.random() * (39 - 36) + 36).toFixed(1), // ECG Signal Strength (mV)
-        systolicBP: Math.floor(Math.random() * (140 - 90) + 90), // Systolic BP
-        diastolicBP: Math.floor(Math.random() * (90 - 60) + 60), // Diastolic BP
-        spo2: Math.floor(Math.random() * (100 - 85) + 85), // SpO2 (Oxygen Saturation)
-        steps: Math.floor(Math.random() * (10000 - 1000) + 1000), // Steps count
-         // °C
-      };
+        heartRate: Math.floor(Math.random() * (100 - 60) + 60), // Normal: 60-100 BPM
+        hrv: Math.floor(Math.random() * (150 - 50) + 50), // Normal: 50-150 ms
+        ecg: (Math.random() * (1.2 - 0.8) + 0.8).toFixed(2), // Normal ECG: 0.8-1.2 mV
+        temperature: (Math.random() * (37.5 - 36.1) + 36.1).toFixed(1), // Normal: 36.1-37.5°C
+        systolicBP: Math.floor(Math.random() * (130 - 110) + 110), // Normal: 110-130 mmHg
+        diastolicBP: Math.floor(Math.random() * (85 - 70) + 70), // Normal: 70-85 mmHg
+        spo2: Math.floor(Math.random() * (100 - 95) + 95), // Normal: 95-100%
+        steps: Math.floor(Math.random() * (8000 - 3000) + 3000), // Average: 3,000-8,000 steps/day
+    };
 
       const formattedData = {
         data: [
@@ -374,7 +373,7 @@ io.on("connection", (socket) => {
     } catch (error) {
       console.error("Error fetching prediction:", error);
     }
-  }, 8000); // Streaming data every 2 seconds
+  }, 3000); // Streaming data every 2 seconds
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
