@@ -189,11 +189,11 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
 ✅ **Real-time smartwatch monitoring** implementation  
 
 ## Screenshots
-![Login Page](https://github.com/Krishsh93/ctrl-hack/images/landing.png)
-![Chatbot](https://github.com/Krishsh93/ctrl-hack/images/chatbot.png)
-![Doctor Dashboard](https://github.com/Krishsh93/ctrl-hack/images/doctordb.png)
-![Patient Dashboard](https://github.com/Krishsh93/ctrl-hack/images/patientdb.png)
-![Hemorrhage Analysis](https://github.com/Krishsh93/ctrl-hack/images/haemo.png)
+![Login Page](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/landing.png)
+![Chatbot](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/chatbot.png)
+![Doctor Dashboard](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/doctordb.png)
+![Patient Dashboard](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/patientdb.png)
+![Hemorrhage Analysis](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/haemo.png)
 
 ---
 **Disclaimer**: This chatbot is for informational purposes only and should not be used as a substitute for professional medical advice. Always consult a healthcare provider for medical concerns.
