@@ -5,8 +5,16 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
 - **Conversational AI** for general medical queries
 - **Document-based Question Answering (RAG)** for uploaded PDFs
 - **Speech-based interactions** for accessibility
+- **Separate login for doctors and patients**, ensuring role-based access
+- **Hemorrhage analysis** for medical imaging
+- **Real-time health monitoring via smartwatch (To be implemented)**
 
 ## Features
+
+### 🔹 User Authentication & Role-Based Access
+- **Separate login for doctors and patients**
+- Doctors can view and manage patient records
+- Patients can access medical history and consult doctors
 
 ### 🔹 Conversational AI for Medical Queries
 - Users can interact with a **text-based chatbot** to ask medical-related questions.
@@ -23,6 +31,14 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
 ### 🔹 Ollama-Powered Medical AI Model
 - Uses **Ollama's MedLLaMA2**, a specialized **LLM for medical applications**.
 - Provides fact-based responses while avoiding speculative medical advice.
+
+### 🔹 Hemorrhage Analysis
+- Upload **brain scan images** for hemorrhage detection.
+- AI-powered **computer vision model** assists doctors in analysis.
+
+### 🔹 Real-Time Health Monitoring via Smartwatch (Upcoming)
+- Future integration with **smartwatches** to monitor vitals in real time.
+- AI-based alerts for abnormalities detected in health data.
 
 ### 🔹 Voice-Based Interaction
 - Supports **voice queries**, transcribing speech to text using **SpeechRecognition**.
@@ -82,6 +98,17 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
   }
   ```
 
+### 4⃣ `/predict_hemorrhage` (Hemorrhage Analysis)
+- **Method**: `POST`
+- **Payload**:
+  - `file` (Image): Brain scan image
+- **Response**:
+  ```json
+  {
+    "prediction": "No hemorrhage detected."
+  }
+  ```
+
 ## Installation & Setup
 
 ### Frontend (React.js)
@@ -115,10 +142,10 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
    ```
 4. API will be available at `http://localhost:4000`
 
-### AI Processing (chatbot)
+### AI Processing (Flask Chatbot)
 1. Navigate to the AI processing folder:
    ```sh
-   cd backend
+   cd flask-api
    ```
 2. Create a virtual environment:
    ```sh
@@ -135,10 +162,10 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
    ```
 5. Flask API will be available at `http://localhost:8000`
 
-### AI Processing (flask)
-1. Navigate to the AI processing folder:
+### AI Processing (Hemorrhage Detection)
+1. Navigate to the Flask API folder:
    ```sh
-   cd flask-api
+   cd hemorrhage-api
    ```
 2. Create a virtual environment:
    ```sh
@@ -151,13 +178,20 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
    ```
 4. Start the Flask AI server:
    ```sh
-   python all-flask-api.py
+   python hemorrhage.py
    ```
 5. Flask API will be available at `http://localhost:5000`
+
 ## Future Enhancements
 ✅ Integration with **FHIR** for structured medical data retrieval  
 ✅ Deployment on **cloud platforms** for scalability  
 ✅ Advanced **NLP fine-tuning** for improved accuracy  
+✅ **Real-time smartwatch monitoring** implementation  
+
+## Screenshots
+![Login Page](https://github.com/Krishsh93/ctrl-hack/images)
+![Chatbot](https://github.com/Krishsh93/ctrl-hack/assets/chatbot.png)
+![Hemorrhage Analysis](https://github.com/Krishsh93/ctrl-hack/assets/hemorrhage.png)
 
 ---
 **Disclaimer**: This chatbot is for informational purposes only and should not be used as a substitute for professional medical advice. Always consult a healthcare provider for medical concerns.
