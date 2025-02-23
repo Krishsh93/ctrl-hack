@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js';
-
+import axios from 'axios';
 ChartJS.register(Title, Tooltip, Legend, ArcElement, LineElement, PointElement, CategoryScale, LinearScale);
 
 const ImageUpload = ({
