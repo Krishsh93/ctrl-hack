@@ -214,15 +214,41 @@ def predict_health():
 
 
 # API Endpoints
+import cv2
+import numpy as np
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from flask import Flask, request, jsonify
+
 @app.route('/predict_hemorrhage', methods=['POST'])
 def predict_hemorrhage():
     if 'file' not in request.files:
         return jsonify({"error": "No file provided"}), 400
-    
+
     file = request.files['file']
-    preprocessed_image = preprocess_image(file)
+    image_path = "/tmp/uploaded_image.jpg"  
+    file.save(image_path)
+
+    # Check if the image is a brain scan
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if image is None:
+        return jsonify({"error": "Invalid image file"}), 400
+
+    h, w = image.shape
+    aspect_ratio = w / h
+    mean_intensity = np.mean(image)
+    std_intensity = np.std(image)
+
+    if not (0.8 < aspect_ratio < 1.2) or not (50 < mean_intensity < 200) or std_intensity < 10:
+        return jsonify({"error": "This is not a valid brain scan"}), 400
+
+    # Preprocess image
+    preprocessed_image = load_img(image_path, target_size=(128, 128), color_mode='grayscale')
+    preprocessed_image = img_to_array(preprocessed_image) / 255.0
+    preprocessed_image = np.expand_dims(preprocessed_image, axis=0)
+
+    # Predict
     predictions = model_hemorrhage.predict(preprocessed_image)
-    
+
     return jsonify(predictions.tolist())
 
 # Define the correct feature order based on the training data
