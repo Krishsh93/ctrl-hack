@@ -10,7 +10,9 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
 - **Separate login for doctors and patients**, ensuring role-based access
 - **Hemorrhage analysis** for medical imaging
 - **Real-time health monitoring via smartwatch (To be implemented)**
-
+- 
+## Wireframe
+![Wireframe](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/untitled.jpeg)
 ## Features
 
 ### 🔹 User Authentication & Role-Based Access
