@@ -13,6 +13,8 @@ The **Healthcare Diagnosis System** is an advanced AI-powered platform designed 
 - 
 ## Wireframe
 ![Wireframe](https://raw.githubusercontent.com/Krishsh93/ctrl-hack/main/images/untitled.jpeg)
+
+
 ## Features
 
 ### 🔹 User Authentication & Role-Based Access
