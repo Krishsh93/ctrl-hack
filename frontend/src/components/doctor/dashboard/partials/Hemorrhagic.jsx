@@ -71,7 +71,7 @@ const ImageUpload = ({setShowPatientAnalysis,showPatientAnalysis,showHemorrhagic
   
       fetchHistoricalData();
     } catch (err) {
-      setError("Error uploading the file.");
+      setError("Upload Correct Image");
       console.error(err);
     }
   };
