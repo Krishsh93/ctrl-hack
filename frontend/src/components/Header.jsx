@@ -43,8 +43,8 @@ export default function Header() {
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
           <a href="#features" style={{ margin: '0 1rem', textDecoration: 'none', color: '#1a202c', fontSize: '0.875rem', fontWeight: '600' }}>Features</a>
           <a href="#contact" style={{ margin: '0 1rem', textDecoration: 'none', color: '#1a202c', fontSize: '0.875rem', fontWeight: '600' }}>About</a>
-          <NavLink to="/" style={{ margin: '0 1rem', textDecoration: 'none', color: '#1a202c', fontSize: '0.875rem', fontWeight: '600' }}>GitHub</NavLink>
-          <NavLink to="/" style={{ margin: '0 1rem', textDecoration: 'none', color: '#1a202c', fontSize: '0.875rem', fontWeight: '600' }}>Demo</NavLink>
+          <NavLink to="https://github.com/Krishsh93/ctrl-hack" style={{ margin: '0 1rem', textDecoration: 'none', color: '#1a202c', fontSize: '0.875rem', fontWeight: '600' }}>GitHub</NavLink>
+          <NavLink to="https://www.youtube.com/watch?v=sFHiLZOl8rg" style={{ margin: '0 1rem', textDecoration: 'none', color: '#1a202c', fontSize: '0.875rem', fontWeight: '600' }}>Demo</NavLink>
           <NavLink to="/" style={{ margin: '0 1rem', textDecoration: 'none', color: '#1a202c', fontSize: '0.875rem', fontWeight: '600' }}>Presentation</NavLink>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
