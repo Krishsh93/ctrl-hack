@@ -57,7 +57,7 @@ except Exception as e:
     print("New FAISS index created and saved.")
 
 # Setup retriever
-retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 3, "fetch_k": 50, "lambda_mult": 0.5})
+retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 3, "fetch_k": 20, "lambda_mult": 0.5})
 
 
 # Load AI model
@@ -71,8 +71,6 @@ You are an assistant for doctor tasks. Use the following context to answer the q
 Context: {context}
 Question: {question}
 Answer in bullet points. Answer only from context .
-VERY IMPORTANT : Do not provide any medical advice or diagnosis. If you are unsure about the answer, please mention that you are unsure.
-VERY IMPORTANT: DO  NOT PROVIDE ANYTHING ELSE OTHER THAN MEDICAL RELATED DATA. JUST SAY THAT IT IS NOT RELATED TO MEDICINES
 """
 
 prompt = ChatPromptTemplate.from_template(prompt_template)
@@ -101,6 +99,21 @@ rag_chain = (
 
 prompttt = """
 VERY IMPORTANT: ACT AS A MEDICAL CHATBOT AND GIVE MEANINGFUL ADVICES DO NOT HALLUCIANATE OR GIVE ANYTHING ELSE"""
+
+# @app.route("/chat", methods=["POST"])
+# def chat():
+#     user_input = request.json.get("message", "").strip()
+#     if not isinstance(user_input, str):
+#         user_input = str(user_input)
+    
+#     user_input = user_input + " " + prompttt
+#     print(f"User Input: {user_input}")
+
+#     def generate():
+#         for response in model.stream(user_input):
+#             yield f"{response.content} "
+
+#     return app.response_class(generate(), content_type='text/plain')
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -135,7 +148,7 @@ def upload():
     # Load and process PDF
     loader = PyMuPDFLoader(tmp_path)
     pages = loader.load()
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
     new_chunks = splitter.split_documents(pages)
 
     if new_chunks:
